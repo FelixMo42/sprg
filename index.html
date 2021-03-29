@@ -1,0 +1,170 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <title>sprg</title>
+        <meta charset="UTF-8">
+        <style>
+            * {
+                box-sizing: border-box;
+            }
+
+            body {
+                margin: 0px;
+            }
+
+            #root {
+                display: flex;
+            }
+
+            #side-pane {
+                max-width: 200px;
+                min-width: 200px;
+
+                padding: 8px;
+
+                display: flex;
+                flex-direction: column;
+            }
+
+            #side-pane-chats {
+                flex: 1;
+            }
+
+            #main-pane {
+                height: 99vh;
+                display: flex;
+                flex-direction: column; 
+                flex-grow: 1;
+                padding: 8px;
+            }
+
+            #side-pane-selector {
+                display: flex;
+            }
+
+            #side-pane-selector button {
+                flex-grow: 1;
+            }
+
+            #main-pane-mesgs {
+                flex-grow: 1;
+            }
+
+            #main-pane-text textarea {
+                width: 100%;
+                resize: vertical;
+            } 
+
+            .mesg-text {
+                margin-bottom: 8px;
+            }
+
+            .mesg-user {
+                text-decoration: underline;
+                font-weight: bold;
+            }
+        </style>
+    </head>
+    <body>
+        <div id="root">
+            <div id="side-pane">
+                <div id="side-pane-selector">
+                    <button>Chats</button>
+                </div>
+                <div id="side-pane-chats">
+                </div>
+                <div>
+                    <button>log out</button>
+                </div>
+            </div>
+
+            <div id="main-pane">
+                <div id="main-pane-mesgs">
+                </div>
+                <div id="main-pane-text">
+                    <textarea></textarea>
+                </div>
+            </div>
+        </div>
+
+        <script src="https://www.gstatic.com/firebasejs/8.3.1/firebase-app.js"></script>
+        <script src="https://www.gstatic.com/firebasejs/8.3.1/firebase-auth.js"></script>
+        <script src="https://www.gstatic.com/firebasejs/8.3.1/firebase-firestore.js"></script>
+
+        <script>
+            firebase.initializeApp({
+                apiKey: "AIzaSyAWezNsncW_DmKaFLUx87NeFHiq8D4C9Ro",
+                authDomain: "sprg-a9e1f.firebaseapp.com",
+                projectId: "sprg-a9e1f",
+            });
+
+            const store = firebase.firestore();
+
+            const users = store.collection("users");
+            const chats = store.collection("chats");
+
+            function removeAllChildNodes(parent) {
+                while (parent.firstChild) {
+                    parent.removeChild(parent.firstChild);
+                }
+            }
+
+            async function render_messages(messages) {
+                let root = document.getElementById("main-pane-mesgs");
+                removeAllChildNodes(root);
+                let prev_mesg_user = null;
+
+                let message_id = 0;
+                let message = await messages.doc(message_id + "").get();
+
+                while (message.exists) {
+                    let data = message.data();
+                    let user = (await data.user.get()).data().name;
+                    
+                    if (user != prev_mesg_user) {
+                        let user_elm = document.createElement("div");
+                        user_elm.classList.add("mesg-user");
+                        root.appendChild(user_elm);
+                        user_elm.innerHTML = user;
+                        prev_mesg_user = user;
+                    }
+
+                    let text_elm = document.createElement("div");
+                    text_elm.classList.add("mesg-text")
+                    root.appendChild(text_elm);
+                    text_elm.innerHTML = data.text;
+
+                    message_id += 1;
+                    message = await messages.doc(message_id + "").get();
+                }
+            }
+
+            async function main(user) {
+                for (let chat of user.chats) {
+                    let node = document.createElement("div"); 
+                    document.getElementById("side-pane-chats").appendChild(node);
+
+                    node.onclick = async () => {
+                        let messages = chat.collection("messages")
+                        render_messages(messages);
+                    };
+
+                    chat.get().then(chat => {
+                        let data = chat.data();
+
+                        node.innerHTML = data.name;
+                    })
+                }
+            }
+
+            firebase.auth().onAuthStateChanged(async (auth) => {
+                if (auth) { 
+                    let user = await users.doc(auth.uid).get();
+                    main(user.data());
+                } else {
+                    
+                }
+            })
+        </script>
+    </body>
+</html>
