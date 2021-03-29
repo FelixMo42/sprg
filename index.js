@@ -88,7 +88,7 @@ firebase.auth().onAuthStateChanged(async auth => {
         current.user = users.doc(auth.uid)
         let user = await users.doc(auth.uid).get()
 
-        if ( user.exists && false ) {
+        if ( user.exists ) {
             main(user.data())
         } else {
             let chats = store.collection("chats")
