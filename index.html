@@ -14,24 +14,28 @@
 
             #root {
                 display: flex;
+                justify-content: center;
             }
 
             #side-pane {
                 max-width: 200px;
                 min-width: 200px;
 
-                padding: 8px;
+                padding: 12px;
 
                 display: flex;
                 flex-direction: column;
             }
 
             #side-pane-chats {
+                padding-top: 8px;
+                padding-bottom: 8px;
                 flex: 1;
             }
 
             #main-pane {
                 height: 99vh;
+                max-width: 1000px;
                 display: flex;
                 flex-direction: column; 
                 flex-grow: 1;
@@ -48,12 +52,18 @@
 
             #main-pane-mesgs {
                 flex-grow: 1;
+                overflow-y: scroll;
             }
 
             #main-pane-text textarea {
                 width: 100%;
                 resize: vertical;
+                height: 100px;
             } 
+
+            #main-pane-text button {
+                width: 100%;
+            }
 
             .mesg-text {
                 margin-bottom: 8px;
@@ -74,7 +84,7 @@
                 <div id="side-pane-chats">
                 </div>
                 <div>
-                    <button>log out</button>
+                    <button onclick="login()">log in</button>
                 </div>
             </div>
 
@@ -82,7 +92,8 @@
                 <div id="main-pane-mesgs">
                 </div>
                 <div id="main-pane-text">
-                    <textarea></textarea>
+                    <textarea id="main-pane-textarea"></textarea>
+                    <button onclick="post()">Send</button>
                 </div>
             </div>
         </div>
@@ -91,80 +102,6 @@
         <script src="https://www.gstatic.com/firebasejs/8.3.1/firebase-auth.js"></script>
         <script src="https://www.gstatic.com/firebasejs/8.3.1/firebase-firestore.js"></script>
 
-        <script>
-            firebase.initializeApp({
-                apiKey: "AIzaSyAWezNsncW_DmKaFLUx87NeFHiq8D4C9Ro",
-                authDomain: "sprg-a9e1f.firebaseapp.com",
-                projectId: "sprg-a9e1f",
-            });
-
-            const store = firebase.firestore();
-
-            const users = store.collection("users");
-            const chats = store.collection("chats");
-
-            function removeAllChildNodes(parent) {
-                while (parent.firstChild) {
-                    parent.removeChild(parent.firstChild);
-                }
-            }
-
-            async function render_messages(messages) {
-                let root = document.getElementById("main-pane-mesgs");
-                removeAllChildNodes(root);
-                let prev_mesg_user = null;
-
-                let message_id = 0;
-                let message = await messages.doc(message_id + "").get();
-
-                while (message.exists) {
-                    let data = message.data();
-                    let user = (await data.user.get()).data().name;
-                    
-                    if (user != prev_mesg_user) {
-                        let user_elm = document.createElement("div");
-                        user_elm.classList.add("mesg-user");
-                        root.appendChild(user_elm);
-                        user_elm.innerHTML = user;
-                        prev_mesg_user = user;
-                    }
-
-                    let text_elm = document.createElement("div");
-                    text_elm.classList.add("mesg-text")
-                    root.appendChild(text_elm);
-                    text_elm.innerHTML = data.text;
-
-                    message_id += 1;
-                    message = await messages.doc(message_id + "").get();
-                }
-            }
-
-            async function main(user) {
-                for (let chat of user.chats) {
-                    let node = document.createElement("div"); 
-                    document.getElementById("side-pane-chats").appendChild(node);
-
-                    node.onclick = async () => {
-                        let messages = chat.collection("messages")
-                        render_messages(messages);
-                    };
-
-                    chat.get().then(chat => {
-                        let data = chat.data();
-
-                        node.innerHTML = data.name;
-                    })
-                }
-            }
-
-            firebase.auth().onAuthStateChanged(async (auth) => {
-                if (auth) { 
-                    let user = await users.doc(auth.uid).get();
-                    main(user.data());
-                } else {
-                    
-                }
-            })
-        </script>
+        <script src="./index.js"></script>
     </body>
 </html>
