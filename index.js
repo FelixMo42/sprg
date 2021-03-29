@@ -98,12 +98,12 @@ firebase.auth().onAuthStateChanged(async auth => {
             let messages = chat.collection("messages");
 
             await messages.add({
-                text: "In the year 2092 world peace was finally achieved with the founding of the Democratic Erthan Alliance  and the end of world war 3.  Despite a mostly nuclear free war the climate effects were too great and scientists predicted the earth would become totally inhabitable within the next 100 years.  In a desperate bid for human survival, many organizations helped fund expeditions to create colonies on other planets.",
+                text: "In the year 2092 world peace was finally achieved with the founding of the Democratic Erthan Alliance and the end of world war 3. Despite a mostly nuclear free war the climate effects were too great and scientists predicted the earth would become totally inhabitable within the next 100 years. In a desperate bid for human survival, many organizations helped fund expeditions to create colonies on other planets.",
                 time: firebase.firestore.FieldValue.serverTimestamp(),
                 user: users.doc("Ll8pUb0U5TTCwmU0hIuL1s8QJx72"),
             })
             await messages.add({
-                text: "It is now the year 2112.  You have been selected to embark on the sprg-413, a massive ship destined for a distant planet where a small presence has already been established. You will be cryogenically frozen, but may be awakened if your assistance is needed along the journey.",
+                text: "It is now the year 2103. You have been selected to embark on the sprg-413, a massive ship destined for a distant planet where a small presence has already been established. You will be cryogenically frozen, but may be awakened if your assistance is needed along the journey.",
                 time: firebase.firestore.FieldValue.serverTimestamp(),
                 user: users.doc("Ll8pUb0U5TTCwmU0hIuL1s8QJx72"),
             })
