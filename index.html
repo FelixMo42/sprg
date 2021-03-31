@@ -73,6 +73,10 @@
                 text-decoration: underline;
                 font-weight: bold;
             }
+
+            .unread {
+                color: lightblue;
+            }
         </style>
     </head>
     <body>
@@ -93,7 +97,7 @@
                 </div>
                 <div id="main-pane-text">
                     <textarea id="main-pane-textarea"></textarea>
-                    <button onclick="post()">Send</button>
+                    <button id="main-pane-button" onclick="post()">Send</button>
                 </div>
             </div>
         </div>
@@ -102,6 +106,7 @@
         <script src="https://www.gstatic.com/firebasejs/8.3.1/firebase-auth.js"></script>
         <script src="https://www.gstatic.com/firebasejs/8.3.1/firebase-firestore.js"></script>
 
+        <script src="./chat.js"></script>
         <script src="./index.js"></script>
     </body>
 </html>
