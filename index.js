@@ -61,4 +61,4 @@ function login() {
 }
 
 let store = init()
-main(god_mode)
+main(usr_mode)
