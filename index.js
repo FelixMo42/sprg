@@ -55,5 +55,10 @@ function main(mode) {
     })
 }
 
+function login() {
+    let provider = new firebase.auth.GoogleAuthProvider()
+    firebase.auth().signInWithPopup(provider)
+}
+
 let store = init()
 main(god_mode)
