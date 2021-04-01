@@ -56,4 +56,4 @@ function main(mode) {
 }
 
 let store = init()
-main(usr_mode)
+main(god_mode)

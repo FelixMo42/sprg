@@ -64,8 +64,8 @@ class Chat {
         
         document.getElementById("main-pane-button").onclick = () => {
             let textarea = document.getElementById("main-pane-textarea");
-            console.log(textarea.value)
             this.post(textarea.value)
+            textarea.value = ""
         }
     }
 
