@@ -64,15 +64,15 @@ class Chat {
         
         document.getElementById("main-pane-button").onclick = () => {
             let textarea = document.getElementById("main-pane-textarea");
+            console.log(textarea.value)
             this.post(textarea.value)
-            textarea.value = "";
         }
     }
 
     post(text, user=this.user) {
         this.messages.add({
             text: text,
-            user: user,
+            user: user.ref,
             time: firebase.firestore.FieldValue.serverTimestamp(),
         })
     }

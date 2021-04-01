@@ -43,7 +43,6 @@ async function init_user(user) {
 }
 
 function main(mode) {
-    let store = init()
     firebase.auth().onAuthStateChanged(async auth => {
         if (auth) { 
             let user = await store.collection("users").doc(auth.uid).get()
@@ -56,4 +55,5 @@ function main(mode) {
     })
 }
 
+let store = init()
 main(usr_mode)
