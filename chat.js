@@ -1,3 +1,5 @@
+let current_chat = null;
+
 function create_node(parent, type, value) {
     let child = document.createElement("div")
     child.classList.add(type)
@@ -30,6 +32,7 @@ class Chat {
                         let node = create_node(this.messages_node, "mesg-user", "")
                         data.user.get().then(user => {
                             node.innerHTML = user.data().name;
+                            scroll_down()
                         })
                         prev_mesg_user = data.user.id;
                     }
@@ -42,8 +45,9 @@ class Chat {
                         this.label_node.classList.add("unread")
                     }
                 }
-
             }
+
+            scroll_down()
         })
 
 
@@ -57,25 +61,34 @@ class Chat {
     }
 
     show() {
+        current_chat = this;
+
         this.label_node.classList.remove("unread")
         let node = document.getElementById("main-pane-mesgs")
         set_children(document.getElementById("main-pane-mesgs"), [this.messages_node])
-        node.scrollTop = node.scrollHeight
-        
-        document.getElementById("main-pane-button").onclick = () => {
-            let textarea = document.getElementById("main-pane-textarea");
-            this.post(textarea.value)
-            textarea.value = ""
-        }
+        scroll_down()
+    }
+
+    send(user) {
+        let textarea = document.getElementById("main-pane-textarea");
+        this.post(textarea.value, user)
+        textarea.value = ""
     }
 
     post(text, user=this.user) {
-        this.messages.add({
-            text: text,
-            user: user.ref,
-            time: firebase.firestore.FieldValue.serverTimestamp(),
-        })
+        if (text != "") {
+            this.messages.add({
+                text: text,
+                user: user.ref,
+                time: firebase.firestore.FieldValue.serverTimestamp(),
+            })
+        }
     }
+}
+
+function scroll_down() {
+    let node = document.getElementById("main-pane-mesgs")
+    node.scrollTop = node.scrollHeight + 1000
 }
 
 function init() {
@@ -86,4 +99,7 @@ function init() {
     })
     
     return firebase.firestore()
+}
+
+function create_chat() {
 }

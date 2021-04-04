@@ -17,7 +17,7 @@
                 justify-content: center;
             }
 
-            #side-pane {
+            .side-pane {
                 max-width: 200px;
                 min-width: 200px;
 
@@ -77,11 +77,21 @@
             .unread {
                 color: lightblue;
             }
+
+            .chat-user {
+                color: gray;
+                padding-top: 16px;
+            }
+
+
+            #side-pane-users-filler {
+                flex-grow: 1;
+            }
         </style>
     </head>
     <body>
         <div id="root">
-            <div id="side-pane">
+            <div class="side-pane">
                 <div id="side-pane-selector">
                     <button>Chats</button>
                 </div>
@@ -97,9 +107,14 @@
                 </div>
                 <div id="main-pane-text">
                     <textarea id="main-pane-textarea"></textarea>
-                    <button id="main-pane-button">Send</button>
                 </div>
             </div>
+            <!-- <div class="side-pane">
+                <div id="side-pane-users-filler">
+                </div>
+                <div id="side-pane-users">
+                </div>
+            </div> -->
         </div>
 
         <script src="https://www.gstatic.com/firebasejs/8.3.1/firebase-app.js"></script>

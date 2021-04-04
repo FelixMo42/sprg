@@ -1,21 +1,41 @@
+async function create_chat(user, name) {
+    let chat = await store.collection("chats").add({ name })
+    let chats = user.data().chats
+    chats.push(chat)
+    user.ref.set({chats}, { merge: true })
+}
+
 function god_mode(user) {
-    store.collection("chats").onSnapshot(async event => {
+    store.collection("users").onSnapshot(async event => {
         for (let change of event.docChanges()) {
-            if (change.type === "added") {
-                new Chat(user, change.doc)
+            if (change.type == "added") {
+                let data = change.doc.data()
+                if ( data.chats.length > 0 ) {
+                    create_node(document.getElementById("side-pane-chats"), "chat-user", " ~ " + data.name)
+                        // .onclick = () => create_chat(change.doc, "chapter 1: awakened")
+                    for (let chat of data.chats) {
+                        new Chat(user, await chat.get())
+                    }
+                } else {
+                    create_node(document.getElementById("side-pane-users"), "user-selector", data.name).onclick = () => current_chat.send(change.doc)
+                }
+            } else {
+                window.location.reload(false);
             }
         }
     })
 }
 
 async function usr_mode(user) {
+    console.log(user.data())
     for (let chat of user.data().chats) {
         new Chat(user, await chat.get())
     }
 }
 
-async function init_user(user) {
+async function init_user(auth) {
     let chats = store.collection("chats")
+    let users = store.collection("users")
     let chat = await chats.add({
         name: "Character Creation",
     })
@@ -39,7 +59,7 @@ async function init_user(user) {
         name: "Unnamed user",
         chats: [chat],
     })
-    usr_mode((await users.doc(auth.uid).get()).data())
+    usr_mode((await users.doc(auth.uid).get()))
 }
 
 function main(mode) {
