@@ -66,10 +66,11 @@ class Chat {
         this.label_node.classList.remove("unread")
         let node = document.getElementById("main-pane-mesgs")
         set_children(document.getElementById("main-pane-mesgs"), [this.messages_node])
+        document.getElementById("main-pane-button").onclick = () => this.send()
         scroll_down()
     }
 
-    send(user) {
+    send(user=this.user) {
         let textarea = document.getElementById("main-pane-textarea");
         this.post(textarea.value, user)
         textarea.value = ""
